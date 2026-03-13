@@ -1443,4 +1443,4 @@ function LuvHub:CreateWindow(Config)
     return WindowAPI
 end 
 
-return luvhub
+return LuvHub
