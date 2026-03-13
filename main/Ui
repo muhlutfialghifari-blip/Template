@@ -985,6 +985,10 @@ function LuvHub:CreateWindow(Config)
             Btn.MouseButton1Click:Connect(Callback)
         end
     end
+    
+    local TeleportTab = CreateTab("Teleport", "🏝️", 89)
+    CreateSection(TeleportTab, "Player Teleport", "Label")
+    CreateSection(TeleportTab, "Teleport to Player", "Dropdown")
 
     local PlayerTab = CreateTab("Player", "👤", 90)
 
