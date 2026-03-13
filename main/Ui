@@ -609,6 +609,87 @@ function LuvHub:CreateWindow(Config)
             end)
             return
         end
+        
+        if Type == "Drop" then
+            local Wrap = Instance.new("Frame", Page)
+            Wrap.LayoutOrder = Order
+            Wrap.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+            Wrap.BackgroundTransparency = 0.6
+            Wrap.Size = UDim2.new(1, -10, 0, 30)
+            Wrap.ClipsDescendants = true
+            Instance.new("UICorner", Wrap).CornerRadius = UDim.new(0, 4)
+            
+            local Head = Instance.new("TextButton", Wrap)
+            Head.Size = UDim2.new(1, 0, 0, 30)
+            Head.BackgroundTransparency = 1
+            Head.Text = ""
+            
+            local Txt = Instance.new("TextLabel", Head)
+            Txt.Text = LabelText .. " : -"
+            Txt.Font = Enum.Font.GothamBold
+            Txt.TextSize = 9
+            Txt.TextColor3 = Colors.Text
+            Txt.Size = UDim2.new(0, 180, 1, 0)
+            Txt.Position = UDim2.new(0, 10, 0, 0)
+            Txt.BackgroundTransparency = 1
+            Txt.TextXAlignment = Enum.TextXAlignment.Left
+            
+            local Arrow = Instance.new("TextLabel", Head)
+            Arrow.Text = "v"
+            Arrow.Font = Enum.Font.GothamBold
+            Arrow.TextSize = 10
+            Arrow.TextColor3 = Colors.Accent
+            Arrow.Size = UDim2.new(0, 20, 1, 0)
+            Arrow.Position = UDim2.new(1, -25, 0, 0)
+            Arrow.BackgroundTransparency = 1
+            
+            local ContentCont = Instance.new("Frame", Wrap)
+            ContentCont.Size = UDim2.new(1, 0, 0, 100)
+            ContentCont.Position = UDim2.new(0, 0, 0, 30)
+            ContentCont.BackgroundTransparency = 1
+            
+            local Scroll = Instance.new("ScrollingFrame", ContentCont)
+            Scroll.Size = UDim2.new(1, -20, 1, -10)
+            Scroll.Position = UDim2.new(0, 10, 0, 5)
+            Scroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+            Scroll.ScrollBarThickness = 2
+            Instance.new("UICorner", Scroll).CornerRadius = UDim.new(0,4)
+            local SL = Instance.new("UIListLayout", Scroll)
+            
+            local IsOpen = false
+            local function Toggle()
+                IsOpen = not IsOpen
+                local TS = game:GetService("TweenService")
+                TS:Create(Wrap, TweenInfo.new(0.3), {Size = IsOpen and UDim2.new(1,-10,0,130) or UDim2.new(1,-10,0,30)}):Play()
+                TS:Create(Arrow, TweenInfo.new(0.3), {Rotation = IsOpen and 180 or 0}):Play()
+            end
+            Head.MouseButton1Click:Connect(Toggle)
+            
+            local Items = Extra or {}
+            for _, i in ipairs(Items) do
+                local itemName = type(i) == "table" and (i.Name or tostring(i)) or tostring(i)
+                local itemValue = type(i) == "table" and (i.Pos or i.Name) or i
+                
+                local B = Instance.new("TextButton", Scroll)
+                B.Size = UDim2.new(1, 0, 0, 22)
+                B.BackgroundTransparency = 1
+                B.Text = "  " .. itemName
+                B.TextColor3 = Colors.SubText
+                B.Font = Enum.Font.Gotham
+                B.TextSize = 9
+                B.TextXAlignment = Enum.TextXAlignment.Left
+                B.MouseButton1Click:Connect(function()
+                    Txt.Text = LabelText .. " : " .. itemName
+                    for _,x in pairs(Scroll:GetChildren()) do if x:IsA("TextButton") then x.TextColor3 = Colors.SubText end end
+                    B.TextColor3 = Colors.Accent
+                    Toggle() -- Otomatis menutup dropdown saat item dipilih
+                    if Callback then Callback(itemValue) end
+                end)
+            end
+            Scroll.CanvasSize = UDim2.new(0,0,0,SL.AbsoluteContentSize.Y)
+            return
+        end
+
 
         if Type == "Choice" then
             local Wrap = Instance.new("Frame", Page)
@@ -1441,6 +1522,10 @@ function LuvHub:CreateWindow(Config)
         
         function TabAPI:AddVersion(Cfg)
             CreateSection(newPage, "Version: " .. (Cfg.Version or "1.0"), "VersionBox", nil, "Last Update: " .. (Cfg.Date or "Unknown"))
+        end
+        
+        function TabAPI:AddDrop(Cfg)
+            CreateSection(newPage, Cfg.Name, "Drop", Cfg.Callback, Cfg.Items)
         end
         
         return TabAPI
