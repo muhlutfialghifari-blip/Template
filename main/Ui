@@ -442,22 +442,30 @@ function LuvHub:CreateWindow(Config)
             U.TextXAlignment = Enum.TextXAlignment.Left
             return
         end
-        
+      
         if Type == "InfoBox" then
             local Box = Instance.new("Frame", Page)
             Box.LayoutOrder = Order
             Box.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
             Box.BackgroundTransparency = 0.3
-            Box.Size = UDim2.new(0.96, 0, 0, 110)
+            Box.Size = UDim2.new(0.96, 0, 0, 0) -- Tinggi awal 0 agar bisa melar otomatis
+            Box.AutomaticSize = Enum.AutomaticSize.Y -- Fitur melar ke bawah (Y)
             Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 6)
             
             local Stroke = Instance.new("UIStroke", Box)
             Stroke.Color = Colors.Accent
             Stroke.Transparency = 0.5
 
+            -- Padding agar teks punya jarak nafas dari garis tepi kotak
+            local Pad = Instance.new("UIPadding", Box)
+            Pad.PaddingTop = UDim.new(0, 8)
+            Pad.PaddingBottom = UDim.new(0, 8)
+            Pad.PaddingLeft = UDim.new(0, 8)
+            Pad.PaddingRight = UDim.new(0, 8)
+
             local T = Instance.new("TextLabel", Box)
-            T.Size = UDim2.new(1, -10, 1, -10)
-            T.Position = UDim2.new(0, 5, 0, 5)
+            T.Size = UDim2.new(1, 0, 0, 0)
+            T.AutomaticSize = Enum.AutomaticSize.Y -- Teks mengikuti jumlah barisnya
             T.BackgroundTransparency = 1
             T.Text = LabelText
             T.TextColor3 = Colors.Text
@@ -468,6 +476,7 @@ function LuvHub:CreateWindow(Config)
             T.TextYAlignment = Enum.TextYAlignment.Top
             return
         end
+
         
         if Type == "VersionBox" then
             local Box = Instance.new("Frame", Page)
@@ -1488,7 +1497,26 @@ function LuvHub:CreateWindow(Config)
         local tabOrder = TabConfig.Order or AutoOrder -- Pakai order otomatis jika tidak diisi manual
         
         local newPage = CreateTab(tabName, tabIcon, tabOrder)
-        AutoOrder = AutoOrder + 1 -- Menambahkan +1 untuk tab eksternal selanjutnya
+        
+        -- [ FITUR BARU: AUTO-OPEN TAB EKSTERNAL PERTAMA ]
+        if AutoOrder == 1 then
+            local currentTab = Tabs[#Tabs] -- Mengambil data tab yang baru saja dibuat
+            
+            -- Matikan warna dan sembunyikan semua tab bawaan terlebih dahulu
+            for _, t in pairs(Tabs) do 
+                t.Ico.TextColor3 = Colors.SubText
+                t.Txt.TextColor3 = Colors.SubText
+                t.Page.Visible = false 
+            end
+            
+            -- Nyalakan warna dan tampilkan halaman tab pertama ini
+            currentTab.Ico.TextColor3 = Colors.Accent
+            currentTab.Txt.TextColor3 = Colors.Text
+            currentTab.Page.Visible = true
+        end
+        
+        AutoOrder = AutoOrder + 1 
+
         
         local TabAPI = {}
         
