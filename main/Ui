@@ -1409,6 +1409,10 @@ function LuvHub:CreateWindow(Config)
             CreateSection(newPage, Cfg.Name, "Toggle", Cfg.Callback)
         end
         
+        function TabAPI:AddInput(Cfg)
+            CreateSection(newPage, Cfg.Name, "Input", Cfg.Callback)
+        end
+
         function TabAPI:AddSlider(Cfg)
             CreateSection(newPage, Cfg.Name, "Slider", Cfg.Callback, {Min = Cfg.Min, Max = Cfg.Max, Def = Cfg.Default})
         end
