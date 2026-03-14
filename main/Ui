@@ -595,10 +595,22 @@ function LuvHub:CreateWindow(Config)
             Conf.Size = UDim2.new(0, 80, 0, 22)
             Conf.Position = UDim2.new(0.5, -40, 0, 85)
             Instance.new("UICorner", Conf).CornerRadius = UDim.new(0,4)
+
             Conf.MouseButton1Click:Connect(function()
                 if not Selected then return end
                 if Callback then Callback(Selected) end
-            end)
+                
+                -- Logika Teleport Otomatis
+                if LabelText == "Teleport to Player" then
+                    if Selected and Selected.Character and Selected.Character:FindFirstChild("HumanoidRootPart") then
+                        local MyHRP = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                        if MyHRP then
+                            MyHRP.CFrame = Selected.Character.HumanoidRootPart.CFrame * CFrame.new(0, 3, 0)
+                            LuvHub:Notify({Title = "🏝️ Teleport", Text = "Berhasil ke: " .. Selected.DisplayName, Duration = 2})
+                        end
+                    end
+                end
+            end) -- Penutup MouseButton1Click
 
             if LabelText == "Teleport to Player" then
                 local Ref = Instance.new("ImageButton", ContentCont)
@@ -613,12 +625,12 @@ function LuvHub:CreateWindow(Config)
             local IsOpen = false
             Head.MouseButton1Click:Connect(function()
                 IsOpen = not IsOpen
-                TweenService:Create(Wrap, TweenInfo.new(0.3), {Size = IsOpen and UDim2.new(1,-10,0,145) or UDim2.new(1,-10,0,30)}):Play()
-                TweenService:Create(Arrow, TweenInfo.new(0.3), {Rotation = IsOpen and 90 or 0}):Play()
+                game:GetService("TweenService"):Create(Wrap, TweenInfo.new(0.3), {Size = IsOpen and UDim2.new(1,-10,0,145) or UDim2.new(1,-10,0,30)}):Play()
+                game:GetService("TweenService"):Create(Arrow, TweenInfo.new(0.3), {Rotation = IsOpen and 90 or 0}):Play()
             end)
-            return
-        end
-        
+            return -- Menutup proses Dropdown
+        end -- MENUTUP blok "if Type == 'Dropdown' then"
+
         if Type == "Drop" then
             local Wrap = Instance.new("Frame", Page)
             Wrap.LayoutOrder = Order
