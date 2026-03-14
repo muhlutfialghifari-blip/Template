@@ -152,7 +152,9 @@ function LuvHub:CreateWindow(Config)
 
         task.spawn(function()
             TS:Create(ProgressFill, TweenInfo.new(Duration, Enum.EasingStyle.Linear), {Size = UDim2.new(0, 0, 1, 0)}):Play()
+            
             task.wait(Duration)
+            
             TS:Create(NFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(1, 50, 0, 0)}):Play()
             local fade = TS:Create(NFrame, TweenInfo.new(0.4), {BackgroundTransparency = 1})
             TS:Create(NStroke, TweenInfo.new(0.4), {Transparency = 1}):Play()
@@ -161,11 +163,14 @@ function LuvHub:CreateWindow(Config)
             TS:Create(Logo, TweenInfo.new(0.4), {ImageTransparency = 1}):Play()
             TS:Create(ProgressBg, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
             TS:Create(ProgressFill, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
+            
             fade:Play()
             fade.Completed:Wait()
             NFrame:Destroy()
         end)
     end
+
+    local FirebaseURL = "https://luvhubxchat-default-rtdb.asia-southeast1.firebasedatabase.app/"
 
     _G.ScriptRunning = true
     _G.WalkSpeedToggle = false
@@ -219,11 +224,20 @@ function LuvHub:CreateWindow(Config)
     if Config.SupportedMaps then
         local currentPlaceId = game.PlaceId
         local mapName = Config.SupportedMaps[currentPlaceId]
+
         if mapName then
-            LuvHub:Notify({ Title = "✅ System: Supported", Text = "Map Terdeteksi: " .. mapName .. "!\nMenyiapkan Luv Hub X...", Duration = 3 })
+            LuvHub:Notify({
+                Title = "✅ System: Supported",
+                Text = "Map Terdeteksi: " .. mapName .. "!\nMenyiapkan Luv Hub X...",
+                Duration = 3
+            })
             task.wait(3)
         else
-            LuvHub:Notify({ Title = "❌ System: Unknown Map", Text = "Map (" .. tostring(currentPlaceId) .. ") tidak didukung! Script dihentikan.", Duration = 5 })
+            LuvHub:Notify({
+                Title = "❌ System: Unknown Map",
+                Text = "Map (" .. tostring(currentPlaceId) .. ") tidak didukung! Script dihentikan.",
+                Duration = 5
+            })
             task.wait(5)
             if ScreenGui then ScreenGui:Destroy() end 
             return nil 
@@ -372,7 +386,7 @@ function LuvHub:CreateWindow(Config)
             L.TextSize = 8
             L.TextXAlignment = Enum.TextXAlignment.Left
             L.LayoutOrder = Order
-            return L
+            return
         end
 
         if Type == "DynamicLabel" then
@@ -434,14 +448,15 @@ function LuvHub:CreateWindow(Config)
             Box.LayoutOrder = Order
             Box.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
             Box.BackgroundTransparency = 0.3
-            Box.Size = UDim2.new(0.96, 0, 0, 0)
-            Box.AutomaticSize = Enum.AutomaticSize.Y 
+            Box.Size = UDim2.new(0.96, 0, 0, 0) -- Tinggi awal 0 agar bisa melar otomatis
+            Box.AutomaticSize = Enum.AutomaticSize.Y -- Fitur melar ke bawah (Y)
             Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 6)
             
             local Stroke = Instance.new("UIStroke", Box)
             Stroke.Color = Colors.Accent
             Stroke.Transparency = 0.5
 
+            -- Padding agar teks punya jarak nafas dari garis tepi kotak
             local Pad = Instance.new("UIPadding", Box)
             Pad.PaddingTop = UDim.new(0, 8)
             Pad.PaddingBottom = UDim.new(0, 8)
@@ -450,7 +465,7 @@ function LuvHub:CreateWindow(Config)
 
             local T = Instance.new("TextLabel", Box)
             T.Size = UDim2.new(1, 0, 0, 0)
-            T.AutomaticSize = Enum.AutomaticSize.Y 
+            T.AutomaticSize = Enum.AutomaticSize.Y -- Teks mengikuti jumlah barisnya
             T.BackgroundTransparency = 1
             T.Text = LabelText
             T.TextColor3 = Colors.Text
@@ -462,6 +477,7 @@ function LuvHub:CreateWindow(Config)
             return
         end
 
+        
         if Type == "VersionBox" then
             local Box = Instance.new("Frame", Page)
             Box.LayoutOrder = Order
@@ -493,114 +509,6 @@ function LuvHub:CreateWindow(Config)
             LblDate.Font = Enum.Font.GothamBold
             LblDate.TextSize = 9
             LblDate.TextXAlignment = Enum.TextXAlignment.Left
-            return
-        end
-        
-        if Type == "Container" then
-            local ContainerBox = Instance.new("Frame", Page)
-            ContainerBox.LayoutOrder = Order
-            ContainerBox.BackgroundTransparency = 1 
-            ContainerBox.Size = UDim2.new(1, -10, 0, 0) 
-            ContainerBox.AutomaticSize = Enum.AutomaticSize.Y 
-            ContainerBox.ClipsDescendants = false
-            return ContainerBox
-        end
-        
-        if Type == "MultiDropdown" then
-            local Wrap = Instance.new("Frame", Page)
-            Wrap.LayoutOrder = Order
-            Wrap.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-            Wrap.BackgroundTransparency = 0.6
-            Wrap.Size = UDim2.new(1, -10, 0, 30)
-            Wrap.ClipsDescendants = true
-            Instance.new("UICorner", Wrap).CornerRadius = UDim.new(0, 4)
-            
-            local Head = Instance.new("TextButton", Wrap)
-            Head.Size = UDim2.new(1, 0, 0, 30)
-            Head.BackgroundTransparency = 1
-            Head.Text = ""
-            
-            local Txt = Instance.new("TextLabel", Head)
-            Txt.Text = LabelText
-            Txt.Font = Enum.Font.GothamBold
-            Txt.TextSize = 9
-            Txt.TextColor3 = Colors.Text
-            Txt.Size = UDim2.new(1, -40, 1, 0) 
-            Txt.Position = UDim2.new(0, 10, 0, 0)
-            Txt.BackgroundTransparency = 1
-            Txt.TextXAlignment = Enum.TextXAlignment.Left
-            Txt.TextTruncate = Enum.TextTruncate.AtEnd 
-            
-            local Arrow = Instance.new("TextLabel", Head)
-            Arrow.Text = ">"
-            Arrow.Font = Enum.Font.GothamBold
-            Arrow.TextSize = 10
-            Arrow.TextColor3 = Colors.Accent
-            Arrow.Size = UDim2.new(0, 20, 1, 0)
-            Arrow.Position = UDim2.new(1, -25, 0, 0)
-            Arrow.BackgroundTransparency = 1
-            
-            local ContentCont = Instance.new("Frame", Wrap)
-            ContentCont.Size = UDim2.new(1, 0, 0, 130)
-            ContentCont.Position = UDim2.new(0, 0, 0, 30)
-            ContentCont.BackgroundTransparency = 1
-            
-            local Scroll = Instance.new("ScrollingFrame", ContentCont)
-            Scroll.Size = UDim2.new(1, -20, 1, -10)
-            Scroll.Position = UDim2.new(0, 10, 0, 5)
-            Scroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
-            Scroll.ScrollBarThickness = 2
-            Instance.new("UICorner", Scroll).CornerRadius = UDim.new(0,4)
-            local SL = Instance.new("UIListLayout", Scroll)
-            
-            local ItemsList = (Extra and Extra.Items) or {}
-            local StateTable = (Extra and Extra.State) or {}
-            
-            local function UpdateHeaderText()
-                local selected = {}
-                for _, item in ipairs(ItemsList) do
-                    if StateTable[item] then table.insert(selected, item) end
-                end
-                Txt.Text = #selected > 0 and LabelText .. ": " .. table.concat(selected, ", ") or LabelText
-            end
-            UpdateHeaderText()
-            
-            for _, item in ipairs(ItemsList) do
-                local itemBtn = Instance.new("TextButton", Scroll)
-                itemBtn.Size = UDim2.new(1, 0, 0, 25)
-                itemBtn.BackgroundTransparency = 1
-                itemBtn.Text = "  " .. item
-                itemBtn.TextColor3 = StateTable[item] and Colors.Accent or Colors.SubText
-                itemBtn.Font = Enum.Font.Gotham
-                itemBtn.TextSize = 9
-                itemBtn.TextXAlignment = Enum.TextXAlignment.Left
-                
-                local check = Instance.new("TextLabel", itemBtn)
-                check.Size = UDim2.new(0, 20, 1, 0)
-                check.Position = UDim2.new(1, -25, 0, 0)
-                check.BackgroundTransparency = 1
-                check.Text = StateTable[item] and "✅" or "❌"
-                check.Font = Enum.Font.Gotham
-                check.TextSize = 9
-                check.TextColor3 = StateTable[item] and Color3.fromRGB(80, 255, 80) or Color3.fromRGB(255, 80, 80)
-                
-                itemBtn.MouseButton1Click:Connect(function()
-                    StateTable[item] = not StateTable[item]
-                    check.Text = StateTable[item] and "✅" or "❌"
-                    check.TextColor3 = StateTable[item] and Color3.fromRGB(80, 255, 80) or Color3.fromRGB(255, 80, 80)
-                    itemBtn.TextColor3 = StateTable[item] and Colors.Accent or Colors.SubText
-                    UpdateHeaderText()
-                    if Callback then Callback(StateTable) end
-                end)
-            end
-            Scroll.CanvasSize = UDim2.new(0,0,0,SL.AbsoluteContentSize.Y)
-            
-            local IsOpen = false
-            Head.MouseButton1Click:Connect(function()
-                IsOpen = not IsOpen
-                game:GetService("TweenService"):Create(Wrap, TweenInfo.new(0.3), {Size = IsOpen and UDim2.new(1,-10,0,160) or UDim2.new(1,-10,0,30)}):Play()
-                game:GetService("TweenService"):Create(Arrow, TweenInfo.new(0.3), {Rotation = IsOpen and 90 or 0}):Play()
-            end)
             return
         end
         
@@ -655,6 +563,7 @@ function LuvHub:CreateWindow(Config)
                 end
                 
             for _, i in ipairs(Items) do
+                -- Sistem pintar pembaca Teks / Table
                 local itemName = type(i) == "table" and (i.Name or tostring(i)) or tostring(i)
                 local itemValue = type(i) == "table" and (i.Pos or i.Name) or i
                 
@@ -672,6 +581,7 @@ function LuvHub:CreateWindow(Config)
                     B.TextColor3=Colors.Accent 
                 end)
             end
+
                 Scroll.CanvasSize = UDim2.new(0,0,0,SL.AbsoluteContentSize.Y)
             end
             Update()
@@ -690,6 +600,7 @@ function LuvHub:CreateWindow(Config)
                 if not Selected then return end
                 if Callback then Callback(Selected) end
                 
+                -- Logika Teleport Otomatis
                 if LabelText == "Teleport to Player" then
                     if Selected and Selected.Character and Selected.Character:FindFirstChild("HumanoidRootPart") then
                         local MyHRP = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -699,7 +610,7 @@ function LuvHub:CreateWindow(Config)
                         end
                     end
                 end
-            end)
+            end) -- Penutup MouseButton1Click
 
             if LabelText == "Teleport to Player" then
                 local Ref = Instance.new("ImageButton", ContentCont)
@@ -717,8 +628,8 @@ function LuvHub:CreateWindow(Config)
                 game:GetService("TweenService"):Create(Wrap, TweenInfo.new(0.3), {Size = IsOpen and UDim2.new(1,-10,0,145) or UDim2.new(1,-10,0,30)}):Play()
                 game:GetService("TweenService"):Create(Arrow, TweenInfo.new(0.3), {Rotation = IsOpen and 90 or 0}):Play()
             end)
-            return 
-        end 
+            return -- Menutup proses Dropdown
+        end -- MENUTUP blok "if Type == 'Dropdown' then"
 
         if Type == "Drop" then
             local Wrap = Instance.new("Frame", Page)
@@ -792,13 +703,14 @@ function LuvHub:CreateWindow(Config)
                     Txt.Text = LabelText .. " : " .. itemName
                     for _,x in pairs(Scroll:GetChildren()) do if x:IsA("TextButton") then x.TextColor3 = Colors.SubText end end
                     B.TextColor3 = Colors.Accent
-                    Toggle() 
+                    Toggle() -- Otomatis menutup dropdown saat item dipilih
                     if Callback then Callback(itemValue) end
                 end)
             end
             Scroll.CanvasSize = UDim2.new(0,0,0,SL.AbsoluteContentSize.Y)
             return
         end
+
 
         if Type == "Choice" then
             local Wrap = Instance.new("Frame", Page)
@@ -951,6 +863,98 @@ function LuvHub:CreateWindow(Config)
             end)
             return
         end
+
+        if Type == "MultiDropdown" then
+            local Wrap = Instance.new("Frame", Page)
+            Wrap.LayoutOrder = Order
+            Wrap.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+            Wrap.BackgroundTransparency = 0.6
+            Wrap.Size = UDim2.new(1, -10, 0, 30)
+            Wrap.ClipsDescendants = true
+            Instance.new("UICorner", Wrap).CornerRadius = UDim.new(0, 4)
+            
+            local Head = Instance.new("TextButton", Wrap)
+            Head.Size = UDim2.new(1, 0, 0, 30)
+            Head.BackgroundTransparency = 1
+            Head.Text = ""
+            
+            local Txt = Instance.new("TextLabel", Head)
+            Txt.Text = LabelText
+            Txt.Font = Enum.Font.GothamBold
+            Txt.TextSize = 9
+            Txt.TextColor3 = Colors.Text
+            Txt.Size = UDim2.new(0, 180, 1, 0)
+            Txt.Position = UDim2.new(0, 10, 0, 0)
+            Txt.BackgroundTransparency = 1
+            Txt.TextXAlignment = Enum.TextXAlignment.Left
+            
+            local Arrow = Instance.new("TextLabel", Head)
+            Arrow.Text = ">"
+            Arrow.Font = Enum.Font.GothamBold
+            Arrow.TextSize = 10
+            Arrow.TextColor3 = Colors.Accent
+            Arrow.Size = UDim2.new(0, 20, 1, 0)
+            Arrow.Position = UDim2.new(1, -25, 0, 0)
+            Arrow.BackgroundTransparency = 1
+            
+            local ContentCont = Instance.new("Frame", Wrap)
+            ContentCont.Size = UDim2.new(1, 0, 0, 130)
+            ContentCont.Position = UDim2.new(0, 0, 0, 30)
+            ContentCont.BackgroundTransparency = 1
+            
+            local Scroll = Instance.new("ScrollingFrame", ContentCont)
+            Scroll.Size = UDim2.new(1, -20, 1, -10)
+            Scroll.Position = UDim2.new(0, 10, 0, 5)
+            Scroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+            Scroll.ScrollBarThickness = 2
+            Instance.new("UICorner", Scroll).CornerRadius = UDim.new(0,4)
+            local SL = Instance.new("UIListLayout", Scroll)
+            
+            local ItemsList = (Extra and Extra.Items) or {}
+            local StateTable = (Extra and Extra.State) or {}
+            
+            for _, rar in ipairs(ItemsList) do
+                local itemBtn = Instance.new("TextButton", Scroll)
+                itemBtn.Size = UDim2.new(1, 0, 0, 25)
+                itemBtn.BackgroundTransparency = 1
+                itemBtn.Text = "  " .. rar
+                itemBtn.TextColor3 = StateTable[rar] and Colors.Accent or Colors.SubText
+                itemBtn.Font = Enum.Font.Gotham
+                itemBtn.TextSize = 9
+                itemBtn.TextXAlignment = Enum.TextXAlignment.Left
+                
+                local check = Instance.new("TextLabel", itemBtn)
+                check.Size = UDim2.new(0, 20, 1, 0)
+                check.Position = UDim2.new(1, -25, 0, 0)
+                check.BackgroundTransparency = 1
+                check.Text = StateTable[rar] and "✅" or "❌"
+                check.Font = Enum.Font.Gotham
+                check.TextSize = 9
+                check.TextColor3 = StateTable[rar] and Color3.fromRGB(80, 255, 80) or Color3.fromRGB(255, 80, 80)
+                
+                itemBtn.MouseButton1Click:Connect(function()
+                    StateTable[rar] = not StateTable[rar]
+                    if StateTable[rar] then
+                        check.Text = "✅"
+                        check.TextColor3 = Color3.fromRGB(80, 255, 80)
+                        itemBtn.TextColor3 = Colors.Accent
+                    else
+                        check.Text = "❌"
+                        check.TextColor3 = Color3.fromRGB(255, 80, 80)
+                        itemBtn.TextColor3 = Colors.SubText
+                    end
+                end)
+            end
+            Scroll.CanvasSize = UDim2.new(0,0,0,SL.AbsoluteContentSize.Y)
+            
+            local IsOpen = false
+            Head.MouseButton1Click:Connect(function()
+                IsOpen = not IsOpen
+                TS:Create(Wrap, TweenInfo.new(0.3), {Size = IsOpen and UDim2.new(1,-10,0,160) or UDim2.new(1,-10,0,30)}):Play()
+                TS:Create(Arrow, TweenInfo.new(0.3), {Rotation = IsOpen and 90 or 0}):Play()
+            end)
+            return
+        end
         
         local Section = Instance.new("Frame", Page)
         Section.LayoutOrder = Order
@@ -1003,6 +1007,208 @@ function LuvHub:CreateWindow(Config)
         end
     end
     
+    local TeleportTab = CreateTab("Teleport", "🏝️", 89)
+    CreateSection(TeleportTab, "Player Teleport", "Label")
+    CreateSection(TeleportTab, "Teleport to Player", "Dropdown")
+
+    local PlayerTab = CreateTab("Player", "👤", 90)
+
+    CreateSection(PlayerTab, "Movement Settings", "Label")
+    CreateSection(PlayerTab, "Enable WalkSpeed", "Toggle", function(v) _G.WalkSpeedToggle = v end)
+    CreateSection(PlayerTab, "WalkSpeed Value", "Slider", function(v) _G.WalkSpeedValue = v end, {Min = 16, Max = 100, Def = 16})
+
+    CreateSection(PlayerTab, "Fly Settings", "Label")
+    CreateSection(PlayerTab, "Enable Fly", "Toggle", function(v) 
+        _G.FlyToggle = v 
+        if not v and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            LocalPlayer.Character.Humanoid.PlatformStand = false
+        end
+    end)
+    CreateSection(PlayerTab, "Fly Speed", "Slider", function(v) _G.FlySpeedValue = v end, {Min = 16, Max = 100, Def = 16})
+
+    CreateSection(PlayerTab, "Identity Settings", "Label")
+    CreateSection(PlayerTab, "Set Nama Samaran", "Input", function(v)
+        if v and v ~= "" then
+            _G.FakeName = v
+        else
+            _G.FakeName = "LuvHub_User"
+        end
+    end)
+
+    CreateSection(PlayerTab, "Hide Name (Visual)", "Toggle", function(v)
+        _G.StreamerMode = v
+        if v then
+            LuvHub:Notify({
+                Title = "🕵️ Streamer Mode Aktif",
+                Text = "Nama disamarkan menjadi: " .. _G.FakeName,
+                Duration = 5
+            })
+        end
+    end)
+
+    CreateSection(PlayerTab, "Collision Settings", "Label")
+    CreateSection(PlayerTab, "Enable Noclip", "Toggle", function(v) _G.NoclipToggle = v end)
+
+    local SecurityTab = CreateTab("Security", "🛡️", 91)
+    CreateSection(SecurityTab, "Server Protection", "Label")
+    CreateSection(SecurityTab, "Anti Admin (Hop Server)", "Toggle", function(v) _G.AntiAdmin = v end)
+
+    CreateSection(SecurityTab, "Utility", "Label")
+    CreateSection(SecurityTab, "Anti AFK", "Toggle", function(v) _G.AntiAFK = v end)
+
+    CreateSection(SecurityTab, "White Screen (CPU Saver)", "Toggle", function(v)
+        ScreenSaver.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        ScreenSaver.Visible = v
+    end)
+    CreateSection(SecurityTab, "Black Screen (Battery Saver)", "Toggle", function(v)
+        ScreenSaver.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        ScreenSaver.Visible = v
+    end)
+
+    local SettingsTab = CreateTab("Settings", "⚙️", 92)
+    CreateSection(SettingsTab, "Tampilan", "Label")
+
+    local TemaList = {"Default Blue", "Sunset Orange", "Matrix Green", "Blood Red"}
+    CreateSection(SettingsTab, "Tema GUI", "Choice", function(v) _G.TemaDipilih = v end, TemaList)
+
+    local ChatTab = CreateTab("Global Chat", "💬", 93)
+
+    local ChatBox = Instance.new("Frame", ChatTab)
+    ChatBox.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
+    ChatBox.BackgroundTransparency = 0.3
+    ChatBox.Size = UDim2.new(0.96, 0, 1, -55) 
+    ChatBox.Position = UDim2.new(0.02, 0, 0, 5)
+    Instance.new("UICorner", ChatBox).CornerRadius = UDim.new(0, 6)
+
+    local ChatStroke = Instance.new("UIStroke", ChatBox)
+    ChatStroke.Color = Colors.Accent
+    ChatStroke.Transparency = 0.5
+
+    local ChatTitle = Instance.new("TextLabel", ChatBox)
+    ChatTitle.Text = "LUV HUB X GLOBAL CHAT"
+    ChatTitle.TextColor3 = Colors.Accent
+    ChatTitle.Font = Enum.Font.GothamBold
+    ChatTitle.TextSize = 9
+    ChatTitle.Position = UDim2.new(0, 10, 0, 8)
+    ChatTitle.Size = UDim2.new(0, 200, 0, 15)
+    ChatTitle.BackgroundTransparency = 1
+    ChatTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+    local ChatContainer = Instance.new("ScrollingFrame", ChatBox)
+    ChatContainer.Size = UDim2.new(1, -10, 1, -38)
+    ChatContainer.Position = UDim2.new(0, 5, 0, 28)
+    ChatContainer.BackgroundTransparency = 1
+    ChatContainer.ScrollBarThickness = 2
+    ChatContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+    ChatContainer.ScrollBarImageColor3 = Colors.Accent
+
+    local ChatList = Instance.new("UIListLayout", ChatContainer)
+    ChatList.SortOrder = Enum.SortOrder.LayoutOrder
+    ChatList.Padding = UDim.new(0, 2)
+
+    local InputSection = Instance.new("Frame", ChatTab)
+    InputSection.Size = UDim2.new(0.96, 0, 0, 35)
+    InputSection.Position = UDim2.new(0.02, 0, 1, -40) 
+    InputSection.BackgroundTransparency = 1
+
+    local ChatInput = Instance.new("TextBox", InputSection)
+    ChatInput.Size = UDim2.new(1, -65, 0, 32)
+    ChatInput.PlaceholderText = "Ketik pesan di sini..."
+    ChatInput.Text = ""
+    ChatInput.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+    ChatInput.TextColor3 = Colors.Text
+    ChatInput.Font = Enum.Font.Gotham
+    ChatInput.TextSize = 10
+    Instance.new("UICorner", ChatInput)
+
+    local SendBtn = Instance.new("TextButton", InputSection)
+    SendBtn.Size = UDim2.new(0, 60, 0, 32)
+    SendBtn.Position = UDim2.new(1, -60, 0, 0)
+    SendBtn.BackgroundColor3 = Colors.Accent
+    SendBtn.Text = "KIRIM"
+    SendBtn.TextColor3 = Color3.new(0,0,0)
+    SendBtn.Font = Enum.Font.GothamBold
+    Instance.new("UICorner", SendBtn)
+
+    local function AddChatMessage(Sender, Message)
+        local MsgLabel = Instance.new("TextLabel", ChatContainer)
+        MsgLabel.Size = UDim2.new(1, -10, 0, 0) 
+        MsgLabel.AutomaticSize = Enum.AutomaticSize.Y
+        MsgLabel.BackgroundTransparency = 1
+        MsgLabel.RichText = true
+        MsgLabel.TextWrapped = true
+        
+        local TitleTag = ""
+        if Sender == "LuvXScripT" then 
+            TitleTag = "<font color='#FFCC00'><b>[OWNER]</b></font> " 
+        end
+
+        MsgLabel.Text = TitleTag .. "<b>[" .. Sender .. "]:</b> " .. Message
+        MsgLabel.TextColor3 = Colors.Text
+        MsgLabel.Font = Enum.Font.Gotham
+        MsgLabel.TextSize = 10
+        MsgLabel.TextXAlignment = Enum.TextXAlignment.Left
+        
+        local Padding = Instance.new("UIPadding", MsgLabel)
+        Padding.PaddingTop = UDim.new(0, 2)
+        Padding.PaddingBottom = UDim.new(0, 2)
+        
+        ChatContainer.CanvasSize = UDim2.new(0, 0, 0, ChatList.AbsoluteContentSize.Y + 20)
+        ChatContainer.CanvasPosition = Vector2.new(0, ChatList.AbsoluteContentSize.Y + 20)
+    end
+
+    SendBtn.MouseButton1Click:Connect(function()
+        local msg = ChatInput.Text
+        if msg == "" then return end
+        local data = {sender = game.Players.LocalPlayer.DisplayName, message = msg, time = os.time()}
+        request({
+            Url = FirebaseURL .. "chat.json",
+            Method = "POST",
+            Headers = {["Content-Type"] = "application/json"},
+            Body = game:GetService("HttpService"):JSONEncode(data)
+        })
+        ChatInput.Text = ""
+    end)
+
+    local lastDataString = "" 
+    task.spawn(function()
+        while _G.ScriptRunning do
+            pcall(function()
+                local res = request({
+                    Url = FirebaseURL .. 'chat.json?orderBy="time"&limitToLast=20', 
+                    Method = "GET"
+                })
+                
+                if res.Success and res.Body ~= "null" and res.Body ~= lastDataString then
+                    lastDataString = res.Body
+                    local data = game:GetService("HttpService"):JSONDecode(res.Body)
+                    
+                    if data then
+                        for _, v in pairs(ChatContainer:GetChildren()) do 
+                            if v:IsA("TextLabel") then v:Destroy() end 
+                        end
+                        
+                        local msgs = {}
+                        for id, c in pairs(data) do table.insert(msgs, c) end
+                        table.sort(msgs, function(a, b) return (a.time or 0) < (b.time or 0) end)
+                        
+                        for _, m in ipairs(msgs) do 
+                            AddChatMessage(m.sender, m.message) 
+                        end
+                    end
+                end
+            end)
+            task.wait(3)
+        end
+    end)
+
+    -- Menjadikan tab bawaan (PlayerTab) aktif saat pertama kali dibuka karena ITab sudah dihapus
+    if Tabs[1] then
+        Tabs[1].Ico.TextColor3 = Colors.Accent
+        Tabs[1].Txt.TextColor3 = Colors.Text
+        Tabs[1].Page.Visible = true
+    end
+
     CloseBtn.MouseButton1Click:Connect(function() 
         _G.ScriptRunning = false
         MainFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Back, 0.3, true, function()
@@ -1102,9 +1308,13 @@ function LuvHub:CreateWindow(Config)
                 if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then yDir = yDir - 1 end
                 
                 flyDir = flyDir + Vector3.new(0, yDir, 0)
-                if flyDir.Magnitude > 0 then flyDir = flyDir.Unit end
+                
+                if flyDir.Magnitude > 0 then
+                    flyDir = flyDir.Unit
+                end
                 
                 flyVel.VectorVelocity = flyDir * _G.FlySpeedValue
+                
                 flyGyro.CFrame = CFrame.lookAt(Vector3.zero, lookVector)
                 
             else
@@ -1138,11 +1348,17 @@ function LuvHub:CreateWindow(Config)
         if not _G.AntiAdmin then return end
         
         local isStaff = false
-        pcall(function() if player:GetRankInGroup(game.CreatorId) > 0 then isStaff = true end end)
+        pcall(function()
+            if player:GetRankInGroup(game.CreatorId) > 0 then isStaff = true end
+        end)
         
         local namaKecil = string.lower(player.Name)
         if isStaff or string.match(namaKecil, "admin") or string.match(namaKecil, "mod") or string.match(namaKecil, "owner") then
-            LuvHub:Notify({ Title = "⚠️ BAHAYA ADMIN ⚠️", Text = "Staff terdeteksi! Pindah server 7 detik...", Duration = 7 })
+            LuvHub:Notify({
+                Title = "⚠️ BAHAYA ADMIN ⚠️",
+                Text = "Staff terdeteksi! Pindah server 7 detik...",
+                Duration = 7
+            })
             task.wait(7)
             pcall(function()
                 local url = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Desc&limit=7"
@@ -1177,7 +1393,10 @@ function LuvHub:CreateWindow(Config)
                 
                 for _, v in pairs(MainFrame:GetChildren()) do
                     if v:IsA("UIGradient") then
-                        v.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, t.Grad1), ColorSequenceKeypoint.new(1.00, t.Grad2)}
+                        v.Color = ColorSequence.new{
+                            ColorSequenceKeypoint.new(0.00, t.Grad1), 
+                            ColorSequenceKeypoint.new(1.00, t.Grad2)
+                        }
                     end
                 end
 
@@ -1227,6 +1446,8 @@ function LuvHub:CreateWindow(Config)
         end
     end)
 
+    local PlayerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+
     task.spawn(function()
         local WasStreamerMode = false
         while _G.ScriptRunning do
@@ -1254,6 +1475,7 @@ function LuvHub:CreateWindow(Config)
                         end
                     end
                     WasStreamerMode = true
+
                 elseif not _G.StreamerMode and WasStreamerMode then
                     if LP.Character and LP.Character:FindFirstChild("Humanoid") then
                         LP.Character.Humanoid.DisplayName = realDisplay
@@ -1277,27 +1499,29 @@ function LuvHub:CreateWindow(Config)
         end
     end)
 
+    -- /// AKSES API UNTUK SCRIPT LUAR /// --
     local WindowAPI = {}
-    local StoredTabs = {} 
-    local AutoOrder = 1 
+    local AutoOrder = 1 -- Penghitung urutan otomatis dimulai dari 1
     
-    function WindowAPI:GetTab(tabName)
-        for _, tab in ipairs(StoredTabs) do
-            if tab.Name == tabName then return tab end
-        end
-        return nil
-    end
-
     function WindowAPI:CreateTab(TabConfig)
         local tabName = TabConfig.Name or "New Tab"
         local tabIcon = TabConfig.Icon or "📁"
-        local tabOrder = TabConfig.Order or AutoOrder 
+        local tabOrder = TabConfig.Order or AutoOrder -- Pakai order otomatis jika tidak diisi manual
         
         local newPage = CreateTab(tabName, tabIcon, tabOrder)
         
+        -- [ FITUR BARU: AUTO-OPEN TAB EKSTERNAL PERTAMA ]
         if AutoOrder == 1 then
-            for _, t in pairs(Tabs) do t.Ico.TextColor3 = Colors.SubText; t.Txt.TextColor3 = Colors.SubText; t.Page.Visible = false end
-            local currentTab = Tabs[#Tabs]
+            local currentTab = Tabs[#Tabs] -- Mengambil data tab yang baru saja dibuat
+            
+            -- Matikan warna dan sembunyikan semua tab bawaan terlebih dahulu
+            for _, t in pairs(Tabs) do 
+                t.Ico.TextColor3 = Colors.SubText
+                t.Txt.TextColor3 = Colors.SubText
+                t.Page.Visible = false 
+            end
+            
+            -- Nyalakan warna dan tampilkan halaman tab pertama ini
             currentTab.Ico.TextColor3 = Colors.Accent
             currentTab.Txt.TextColor3 = Colors.Text
             currentTab.Page.Visible = true
@@ -1305,61 +1529,52 @@ function LuvHub:CreateWindow(Config)
         
         AutoOrder = AutoOrder + 1 
 
-        local TabAPI = {Name = tabName, Page = newPage}
         
-        function TabAPI:AddButton(Cfg) CreateSection(newPage, Cfg.Name, "Button", Cfg.Callback, Cfg.InteractText or "Click") end
-        function TabAPI:AddToggle(Cfg) CreateSection(newPage, Cfg.Name, "Toggle", Cfg.Callback) end
-        function TabAPI:AddInput(Cfg) CreateSection(newPage, Cfg.Name, "Input", Cfg.Callback) end
-        function TabAPI:AddSlider(Cfg) CreateSection(newPage, Cfg.Name, "Slider", Cfg.Callback, {Min = Cfg.Min, Max = Cfg.Max, Def = Cfg.Default}) end
-        function TabAPI:AddLabel(Cfg) CreateSection(newPage, Cfg.Text, "Label") end
-        function TabAPI:AddDropdown(Cfg) CreateSection(newPage, Cfg.Name, "Dropdown", Cfg.Callback, Cfg.Items) end
-        function TabAPI:AddProfile() CreateSection(newPage, "", "Profile") end
-        function TabAPI:AddInfoBox(Cfg) CreateSection(newPage, Cfg.Text, "InfoBox") end
-        function TabAPI:AddVersion(Cfg) CreateSection(newPage, "Version: " .. (Cfg.Version or "1.0"), "VersionBox", nil, "Last Update: " .. (Cfg.Date or "Unknown")) end
-        function TabAPI:AddDrop(Cfg) CreateSection(newPage, Cfg.Name, "Drop", Cfg.Callback, Cfg.Items) end
-        function TabAPI:AddContainer() return CreateSection(newPage, "", "Container") end
-        function TabAPI:AddMultiDropdown(Cfg) CreateSection(newPage, Cfg.Name, "MultiDropdown", Cfg.Callback, {Items = Cfg.Items, State = Cfg.State}) end
-        function TabAPI:AddChoice(Cfg) CreateSection(newPage, Cfg.Name, "Choice", Cfg.Callback, Cfg.Items) end
+        local TabAPI = {}
         
-        table.insert(StoredTabs, TabAPI)
+        function TabAPI:AddButton(Cfg)
+            CreateSection(newPage, Cfg.Name, "Button", Cfg.Callback, Cfg.InteractText or "Click")
+        end
+        
+        function TabAPI:AddToggle(Cfg)
+            CreateSection(newPage, Cfg.Name, "Toggle", Cfg.Callback)
+        end
+        
+        function TabAPI:AddInput(Cfg)
+            CreateSection(newPage, Cfg.Name, "Input", Cfg.Callback)
+        end
+
+        function TabAPI:AddSlider(Cfg)
+            CreateSection(newPage, Cfg.Name, "Slider", Cfg.Callback, {Min = Cfg.Min, Max = Cfg.Max, Def = Cfg.Default})
+        end
+        
+        function TabAPI:AddLabel(Cfg)
+            CreateSection(newPage, Cfg.Text, "Label")
+        end
+        
+        function TabAPI:AddDropdown(Cfg)
+            CreateSection(newPage, Cfg.Name, "Dropdown", Cfg.Callback, Cfg.Items)
+        end
+        
+        function TabAPI:AddProfile()
+            CreateSection(newPage, "", "Profile")
+        end
+        
+        function TabAPI:AddInfoBox(Cfg)
+            CreateSection(newPage, Cfg.Text, "InfoBox")
+        end
+        
+        function TabAPI:AddVersion(Cfg)
+            CreateSection(newPage, "Version: " .. (Cfg.Version or "1.0"), "VersionBox", nil, "Last Update: " .. (Cfg.Date or "Unknown"))
+        end
+        
+        function TabAPI:AddDrop(Cfg)
+            CreateSection(newPage, Cfg.Name, "Drop", Cfg.Callback, Cfg.Items)
+        end
+        
         return TabAPI
     end
-
-    local InternalTpTab = WindowAPI:CreateTab({ Name = "Teleport", Icon = "🏝️", Order = 89 })
-    InternalTpTab:AddLabel({ Text = "Player Teleport" })
-    InternalTpTab:AddDropdown({ Name = "Teleport to Player" })
-
-    local PlayerTab = WindowAPI:CreateTab({ Name = "Player", Icon = "👤", Order = 90 })
-    PlayerTab:AddLabel({ Text = "Movement Settings" })
-    PlayerTab:AddToggle({ Name = "Enable WalkSpeed", Callback = function(v) _G.WalkSpeedToggle = v end })
-    PlayerTab:AddSlider({ Name = "WalkSpeed Value", Min = 16, Max = 100, Default = 16, Callback = function(v) _G.WalkSpeedValue = v end })
-    PlayerTab:AddLabel({ Text = "Fly Settings" })
-    PlayerTab:AddToggle({ Name = "Enable Fly", Callback = function(v) 
-        _G.FlyToggle = v 
-        if not v and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then LocalPlayer.Character.Humanoid.PlatformStand = false end
-    end })
-    PlayerTab:AddSlider({ Name = "Fly Speed", Min = 16, Max = 100, Default = 16, Callback = function(v) _G.FlySpeedValue = v end })
-    PlayerTab:AddLabel({ Text = "Identity Settings" })
-    PlayerTab:AddInput({ Name = "Set Nama Samaran", Callback = function(v) _G.FakeName = (v and v ~= "") and v or "LuvHub_User" end })
-    PlayerTab:AddToggle({ Name = "Hide Name (Visual)", Callback = function(v)
-        _G.StreamerMode = v
-        if v then LuvHub:Notify({ Title = "🕵️ Streamer Mode Aktif", Text = "Nama disamarkan: " .. _G.FakeName, Duration = 5 }) end
-    end })
-    PlayerTab:AddLabel({ Text = "Collision Settings" })
-    PlayerTab:AddToggle({ Name = "Enable Noclip", Callback = function(v) _G.NoclipToggle = v end })
-
-    local SecurityTab = WindowAPI:CreateTab({ Name = "Security", Icon = "🛡️", Order = 91 })
-    SecurityTab:AddLabel({ Text = "Server Protection" })
-    SecurityTab:AddToggle({ Name = "Anti Admin (Hop Server)", Callback = function(v) _G.AntiAdmin = v end })
-    SecurityTab:AddLabel({ Text = "Utility" })
-    SecurityTab:AddToggle({ Name = "Anti AFK", Callback = function(v) _G.AntiAFK = v end })
-    SecurityTab:AddToggle({ Name = "White Screen (CPU Saver)", Callback = function(v) ScreenSaver.BackgroundColor3 = Color3.fromRGB(255, 255, 255); ScreenSaver.Visible = v end })
-    SecurityTab:AddToggle({ Name = "Black Screen (Battery Saver)", Callback = function(v) ScreenSaver.BackgroundColor3 = Color3.fromRGB(0, 0, 0); ScreenSaver.Visible = v end })
-
-    local SettingsTab = WindowAPI:CreateTab({ Name = "Settings", Icon = "⚙️", Order = 92 })
-    SettingsTab:AddLabel({ Text = "Tampilan" })
-    SettingsTab:AddChoice({ Name = "Tema GUI", Items = {"Default Blue", "Sunset Orange", "Matrix Green", "Blood Red"}, Callback = function(v) _G.TemaDipilih = v end })
-
+    
     return WindowAPI
 end 
 
